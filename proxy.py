@@ -16,22 +16,30 @@ PROVIDERS = {
     "nvidia_nim": {
         "base_url": "https://integrate.api.nvidia.com/v1",
         "api_key": os.getenv("NVIDIA_API_KEY"),
+        "extra_headers": {},
     },
     "openrouter": {
         "base_url": "https://openrouter.ai/api/v1",
         "api_key": os.getenv("OPENROUTER_API_KEY"),
+        "extra_headers": {
+            "HTTP-Referer": "http://localhost:8082",
+            "X-Title": "claude-code-proxy"
+        },
     },
     "groq": {
         "base_url": "https://api.groq.com/openai/v1",
         "api_key": os.getenv("GROQ_API_KEY"),
+        "extra_headers": {},
     },
     "google": {
         "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
         "api_key": os.getenv("GOOGLE_API_KEY"),
+        "extra_headers": {},
     },
     "zai": {
         "base_url": "https://api.z.ai/api/paas/v4",
         "api_key": os.getenv("ZAI_API_KEY"),
+        "extra_headers": {},
     },
 }
 
@@ -41,8 +49,9 @@ if not provider:
 if not provider["api_key"]:
     raise ValueError(f"Missing API key for provider: {PROVIDER}")
 
-BASE_URL = provider["base_url"]
+BASE_URL = provider["base_url"].rstrip("/")  # ensure no trailing slash
 API_KEY = provider["api_key"]
+EXTRA_HEADERS = provider["extra_headers"]
 
 print(f"✅ Provider: {PROVIDER}")
 print(f"✅ Model: {MODEL}")
@@ -84,7 +93,14 @@ async def models():
 async def messages(request: Request):
     body = await request.json()
     oai_payload = anthropic_to_openai(body)
-    headers = {"Authorization": f"Bearer {API_KEY}"}
+    headers = {"Authorization": f"Bearer {API_KEY}", **EXTRA_HEADERS}
+    
+    # Debug
+    print(f"🔵 Provider: {PROVIDER}")
+    print(f"🔵 Model: {MODEL}")
+    print(f"🔵 Base URL: {BASE_URL}")
+    print(f"🔵 Streaming: {oai_payload['stream']}")
+    print(f"🔵 API Key starts with: {API_KEY[:10] if API_KEY else 'NONE'}")
 
     # Non-streaming
     if not oai_payload["stream"]:
@@ -113,6 +129,7 @@ async def messages(request: Request):
             async with httpx.AsyncClient(timeout=120) as client:
                 async with client.stream("POST", f"{BASE_URL}/chat/completions", json=oai_payload, headers=headers) as r:
                     async for line in r.aiter_lines():
+                        print(f"📥 Raw line: {line}")  # add this
                         if not line.startswith("data: ") or line.strip() == "data: [DONE]":
                             continue
                         try:
