@@ -1,0 +1,21 @@
+# Active provider: nvidia_nim, openrouter, groq, google, zai, zen, cerebral
+PROVIDER=nvidia_nim
+
+# Model to use (must match provider)
+# NVIDIA_MODELS = [z-ai/glm5, moonshot/kimi-k2.2, qwen/qwen3.5-397b-a17b,mistralai/devstral-2-123b-instruct-2512]
+# ZAI_MODELS = [z-ai/GLM-4.7-Flash, z-ai/GLM-4.5-Flash, z-ai/GLM-4.6V-Flash]
+# OPENROUTER_MODELS = [nvidia/nemotron-3-super-120b-a12b:free, minimax/minimax-m2.5:free, stepfun/step-3.5-flash:free, qwen/qwen3-next-80b-a3b-instruct:free, openai/gpt-oss-120b:free, meta-llama/llama-3.3-70b-instruct:free]
+# GOOGLE_MODELS = [gemma-3-27B, gemma-3-27B-flash]
+# CEREBRAL_MODELS = [cerebral/atlas-1.0-70b-instruct, cerebral/atlas-1.0-70b-instruct-v2, cerebral/atlas-1.0-70b-instruct-v3]
+# ZEN_MODELS = [opencode/nemotron-3-super-free, opencode/minimax-m2.5-free, opencode/mimo-v2-pro-free]
+
+MODEL=mistralai/devstral-2-123b-instruct-2512
+
+# API Keys
+NVIDIA_API_KEY=
+OPENROUTER_API_KEY=
+GROQ_API_KEY=
+GOOGLE_API_KEY=
+ZAI_API_KEY=
+CEREBRAL_API_KEY=
+ZEN_API_KEY=
